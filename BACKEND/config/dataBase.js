@@ -17,7 +17,7 @@ async function connectDB() {
         // If an error occurs, log the error message
         console.error(`Error: ${error.message}`);
 
-        // Exit the process with a failure code (1) to indicate an error
+        // Exit the process with a failure code (1) to indicate an error good for eeors
         process.exit(1);
 
     }
