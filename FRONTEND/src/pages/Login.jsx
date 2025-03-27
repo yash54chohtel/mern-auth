@@ -1,11 +1,21 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
+import axios from "axios";
+import { toast } from 'react-toastify';
+import { CgSpinner } from "react-icons/cg";
 
 const Login = () => {
 
     // initilizing useNavigator
     const navigate = useNavigate();
+
+    // Loading state
+    const [loading, setLoading] = useState(false);
+
+    // extracting data from appcontext that we have created
+    const { backendUrl, setIsLoggedin } = useContext(AppContext);
 
     // state variable for storing auth state
     const [state, setState] = useState('signUp');
@@ -15,6 +25,67 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+
+    // Function to handle form submit
+    const onSubmitHandler = async (e) => {
+
+        try {
+
+            // Start loading
+            setLoading(true);
+
+            // preventing default
+            e.preventDefault();
+
+            // defininf response variable to store response
+            let response;
+
+            // Ensures cookies are sent in cross-origin requests
+            axios.defaults.withCredentials = true;
+
+            if (state === 'signUp') {
+
+                // hitting register api
+                response = await axios.post(backendUrl + "/api/auth/register", { name, email, password });
+
+            } else {
+
+                // hitting login api
+                response = await axios.post(backendUrl + "/api/auth/login", { email, password });
+            }
+
+            // Destructure response data
+            const { data } = response;
+
+            // handling response
+            if (data.success) {
+
+                toast.success(data.message);
+
+                console.log(data.message); // ✅ Remove in production
+                setIsLoggedin(true);
+                navigate('/');
+
+            } else {
+
+                // display response message in toast notiifcation
+                toast.error(data.message);
+            }
+
+        } catch (error) {
+
+            console.error("Error during authentication:", error);
+
+            toast.error(error.response?.data?.message || "Something went wrong!");
+
+        } finally {
+
+            // Stop loading after request completes
+            setLoading(false);
+
+        }
+
+    }
 
     return (
         <>
@@ -33,7 +104,7 @@ const Login = () => {
                     <p className='text-center text-sm mb-6'>{state === 'signUp' ? 'Create your account' : 'Login to your account'}</p>
 
                     {/* form */}
-                    <form>
+                    <form onSubmit={(e) => onSubmitHandler(e)}>
 
                         {/* Full Name Field (Only for Sign Up) */}
                         {state === 'signUp' && (
@@ -70,7 +141,13 @@ const Login = () => {
                         )}
 
                         {/* submit button */}
-                        <button className='mb-4 w-full py-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 transition'>{state === 'signUp' ? 'Sign Up' : 'Login'}</button>
+                        <button className='flex items-center justify-center h-10 mb-4 w-full py-2 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:from-purple-700 hover:to-blue-600 transition'
+                            disabled={loading}
+                        >
+                            {loading ?
+                                (<span className='loder'> <CgSpinner size={25} /> </span>)
+                                : (state === "signUp" ? "Sign Up" : "Login")}
+                        </button>
 
                         {/* login and signup Option */}
                         {

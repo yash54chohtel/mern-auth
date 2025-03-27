@@ -18,10 +18,13 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS to allow frontend to communicate with backend
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // Allow frontend origin
+    credentials: true // Allow sending cookies
+}));
 
 // Middleware to parse cookies from incoming requests
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 // -------------------- Connect to MongoDB -------------------- //
 
@@ -31,7 +34,7 @@ connectDB();
 // -------------------- Routes -------------------- //
 
 // User auth routes `/api/auth`
-app.use("/api/auth", authRouter); 
+app.use("/api/auth", authRouter);
 
 // -------------------- Server Configuration -------------------- //
 
