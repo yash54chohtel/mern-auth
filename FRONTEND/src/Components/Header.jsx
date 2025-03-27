@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
+import { AppContext } from '../context/AppContext';
 
 const Header = () => {
+
+    // extracting data from appcontext that we have created
+    const { userData } = useContext(AppContext);
+    console.log(userData);
+    
     return (
         <>
 
@@ -10,7 +16,8 @@ const Header = () => {
                 <img src={assets.header_img} alt="" className='w-36 h-36 rounded-full mb-6' />
 
                 <h1 className='flex items-center gap-2 text-xl font-medium'>
-                    Hey Developer <img src={assets.hand_wave} alt="" className='aspect-square' />
+                    Hey  {userData ? userData.name.toUpperCase() : 'Developer'} !
+                    <img src={assets.hand_wave} alt="" className='aspect-square' />
                 </h1>
 
                 <h2 className='text-3xl font-semibold mb-4'>Welcom to out app</h2>

@@ -15,7 +15,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     // extracting data from appcontext that we have created
-    const { backendUrl, setIsLoggedin } = useContext(AppContext);
+    const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContext);
 
     // state variable for storing auth state
     const [state, setState] = useState('signUp');
@@ -60,11 +60,10 @@ const Login = () => {
             // handling response
             if (data.success) {
 
-                toast.success(data.message);
-
-                console.log(data.message); // ✅ Remove in production
-                setIsLoggedin(true);
-                navigate('/');
+                toast.success(data.message); // notification
+                setIsLoggedin(true); // set loggedin state
+                getUserData() // calling get userData function for getting user data
+                navigate('/'); // navigating
 
             } else {
 
