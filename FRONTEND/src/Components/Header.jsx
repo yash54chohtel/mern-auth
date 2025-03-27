@@ -5,8 +5,8 @@ import { AppContext } from '../context/AppContext';
 const Header = () => {
 
     // extracting data from appcontext that we have created
-    const { userData } = useContext(AppContext);
-    console.log(userData);
+    const { userData, isLoggedin } = useContext(AppContext);
+    console.log(userData, isLoggedin);
     
     return (
         <>

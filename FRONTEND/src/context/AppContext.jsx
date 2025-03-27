@@ -15,38 +15,46 @@ export const AppContextProvider = ({ children }) => {
     const [isLoggedin, setIsLoggedin] = useState(false); // user logged-in state
     const [userData, setUserData] = useState(null); // user data (default should be null, not false)
 
-    // endpoint api hit for getting user data
-    const getUserData = async () => {
-        try {
-
-            // calling get api
-            const { data } = await axios.get(backendUrl + "/api/auth/get-user-data")
-
-            // setting userData
-            data.success ? setUserData(data.userData) : toast.error(data.message);
-
-        } catch (error) {
-
-            console.error(error.message);
-
-        }
-    };
 
     // function for getting user auth status
     const getAuthState = async () => {
         try {
 
-            const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
+            // if (!isLoggedin) {
+            //     return; // Agar user logged in nahi hai toh API call mat karo
+            // }
+
+            const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
 
             if (data.success) {
                 setIsLoggedin(true);
-                getUserData();
+                await getUserData();
+            } else {
+                setIsLoggedin(false);
+                setUserData(null);
             }
 
+
         } catch (error) {
-            console.error(error.message)
+            console.error("Auth check error:", error);
         }
-    }
+    };
+
+    // Function to fetch user data
+    const getUserData = async () => {
+
+        try {
+            const { data } = await axios.get(backendUrl + "/api/auth/get-user-data");
+            if (data.success) {
+                setUserData(data.userData);
+            } else {
+                console.error(data.message);
+            }
+        } catch (error) {
+            console.error(error.response?.data?.message || "Failed to fetch user data.");
+        }
+    };
+
 
     useEffect(() => {
         getAuthState();

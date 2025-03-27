@@ -23,7 +23,7 @@ authRouter.post("/send-verify-otp", userAuth, sendVerifyOtp) // 'http://localhos
 // verify account with otp [POST]
 authRouter.post("/verify-email", userAuth, verifyEmail) // 'http://localhost:3000/api/auth/verify-email'
 
-// Check is user Authenticated [POST]
+// Check is user Authenticated [GET]
 authRouter.get("/is-auth", userAuth, isAuthenticated) // 'http://localhost:3000/api/auth/is-auth'
 
 // Send pasword reset OTP [POST]
